@@ -1,0 +1,52 @@
+================================================================================
+          HƯỚNG DẪN SỬ DỤNG HỆ THỐNG VIDEOTUPRO CHO NHÂN SỰ
+================================================================================
+
+1. YÊU CẦU MÁY TÍNH:
+   - Hệ điều hành: Windows 10 hoặc Windows 11.
+   - Đã cài đặt trình duyệt Google Chrome (ở vị trí mặc định).
+   - Đã cài đặt Python 3.10 trở lên (khuyên dùng Python 3.12).
+     * Lưu ý khi cài Python: PHẢI tích chọn ô "[x] Add Python to PATH" ở bước đầu tiên.
+
+--------------------------------------------------------------------------------
+2. BƯỚC 1: CÀI ĐẶT MÔI TRƯỜNG (CHỈ CHẠY 1 LẦN DUY NHẤT KHI NHẬN MÁY):
+   - Nhấp đúp chuột vào file:
+     👉 [Cai_Dat_Moi_Truong_Lan_Dau.bat]
+   - Chờ màn hình đen chạy cài đặt thư viện (khoảng 30 giây - 1 phút) cho đến khi báo thành công.
+
+--------------------------------------------------------------------------------
+3. BƯỚC 2: ĐĂNG NHẬP TÀI KHOẢN (MUSE.AI HOẶC GOOGLE FLOW):
+   - Nếu kênh làm video trên Muse.ai:
+     👉 Nhấp đúp chuột vào file [2_Dang_Nhap_Muse_Ai.bat].
+     Hệ thống sẽ mở sẵn 4 cửa sổ Chrome tương ứng với 4 Profile.
+     Nhân sự chỉ cần đăng nhập tài khoản Muse.ai trên các cửa sổ này (lưu mật khẩu để lần sau không cần đăng nhập lại).
+   
+   - Nếu kênh làm video trên Google Flow:
+     👉 Nhấp đúp chuột vào file [3_Dang_Nhap_Google_Flow.bat] và đăng nhập Google.
+
+--------------------------------------------------------------------------------
+4. BƯỚC 3: BẬT TOOL LÀM VIDEO:
+   - Nhấp đúp chuột vào file:
+     👉 [1_Bat_Dau_Chay_Videotupro.bat]
+   - Tool sẽ tự động mở giao diện web trên trình duyệt tại:
+     http://127.0.0.1:8765
+   - Giữ nguyên cửa sổ đen (cmd) đang chạy, không tắt cửa sổ này trong suốt lúc làm video.
+
+--------------------------------------------------------------------------------
+5. CÁC TÍNH NĂNG CÓ SẴN TRONG TOOL:
+   - 4 Kênh mẫu đã được thiết lập sẵn Quy tắc Hook kịch bản & Ảnh nhân vật 3 chiều chuẩn:
+     1. Kinh_Doanh_Tri_Thuc_Trieu_View
+     2. Dao_Tam_Linh_Chua_Lanh
+     3. Bai_Hoc_Cuoc_Song_Dao_Ly
+     4. Hao_Khi_Lich_Su_Danh_Nhan
+   - Chế độ sao chép video YouTube cực nhanh (phân tích Transcript chỉ mất 3-5 giây).
+   - Tự động chia đều phân cảnh cho 4 Profile chạy song song để tối đa hóa tốc độ.
+   - Nhạc nền và Logo đã có sẵn trong thư mục assets/.
+   - Trình kết xuất video (FFmpeg) đã được tích hợp sẵn bên trong thư mục ffmpeg/, không cần cài đặt thêm.
+
+--------------------------------------------------------------------------------
+6. TẮT TOOL KHI KẾT THÚC CÔNG VIỆC:
+   - Khi không sử dụng nữa hoặc muốn tắt nhanh toàn bộ trình duyệt và tool:
+     👉 Nhấp đúp chuột vào file [4_Tat_Tool.bat].
+================================================================================
+

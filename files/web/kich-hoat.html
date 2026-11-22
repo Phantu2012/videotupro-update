@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kích hoạt bản quyền — VideoTuPro</title>
+<style>
+  :root { --bg:#0b1020; --card:#131a2e; --line:rgba(255,255,255,.09); --text:#e8ecf5; --muted:#8a94ad; --gold:#f5c443; --ok:#34d399; --err:#f87171; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:radial-gradient(1200px 600px at 20% -10%, #1c2547 0%, var(--bg) 60%); color:var(--text); font:15px/1.55 "Segoe UI", system-ui, sans-serif; }
+  .card { width:min(620px, 92vw); background:var(--card); border:1px solid var(--line); border-radius:16px; padding:28px 30px; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+  h1 { margin:0 0 4px; font-size:22px; }
+  .muted { color:var(--muted); font-size:13px; }
+  .step { margin-top:20px; }
+  .step b { color:var(--gold); }
+  .mc { display:flex; gap:10px; align-items:center; margin-top:8px; }
+  .mc code { flex:1; font:600 22px/1 Consolas, monospace; letter-spacing:2px; background:#0b1124; border:1px dashed rgba(245,196,67,.5); color:var(--gold); padding:14px 16px; border-radius:10px; text-align:center; }
+  button { cursor:pointer; border:0; border-radius:10px; padding:11px 18px; font-weight:700; font-size:14px; }
+  .ghost { background:transparent; color:var(--text); border:1px solid var(--line); }
+  .primary { background:linear-gradient(135deg,#f5c443,#e09a1a); color:#1a1300; width:100%; margin-top:12px; padding:13px; font-size:15px; }
+  textarea { width:100%; height:96px; margin-top:8px; background:#0b1124; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font:13px/1.45 Consolas, monospace; resize:vertical; }
+  .msg { margin-top:14px; padding:10px 12px; border-radius:10px; font-size:14px; display:none; }
+  .msg.err { display:block; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.35); color:var(--err); }
+  .msg.ok { display:block; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.35); color:var(--ok); }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🔐 Kích hoạt bản quyền VideoTuPro</h1>
+  <div class="muted" id="reason">Đang kiểm tra bản quyền…</div>
+
+  <div class="step">
+    <div><b>Bước 1.</b> Gửi <b>Mã máy</b> dưới đây cho người cấp bản quyền:</div>
+    <div class="mc"><code id="mc">…</code><button class="ghost" id="copy">📋 Sao chép</button></div>
+  </div>
+
+  <div class="step">
+    <div><b>Bước 2.</b> Dán <b>Key bản quyền</b> nhận được (dạng VTP-XXXXX-…):</div>
+    <textarea id="key" placeholder="VTP-....." spellcheck="false"></textarea>
+    <button class="primary" id="go">Kích hoạt</button>
+  </div>
+  <div class="msg" id="msg"></div>
+</div>
+<script>
+const $ = (s) => document.querySelector(s);
+function show(text, ok) { const m = $("#msg"); m.className = "msg " + (ok ? "ok" : "err"); m.textContent = text; }
+async function load() {
+  const st = await (await fetch("/api/license/status")).json();
+  $("#mc").textContent = st.machine_code;
+  if (st.ok) {
+    $("#reason").textContent = `Đã kích hoạt cho: ${st.name} — còn ${st.days_left} ngày (hết hạn ${st.expires.split("-").reverse().join("/")}).`;
+    show("Bản quyền hợp lệ. Đang mở tool…", true);
+    setTimeout(() => location.href = "/", 1200);
+  } else {
+    $("#reason").textContent = st.reason || "Chưa kích hoạt.";
+  }
+}
+$("#copy").onclick = async () => {
+  try { await navigator.clipboard.writeText($("#mc").textContent); $("#copy").textContent = "✔ Đã chép"; }
+  catch { const r = document.createRange(); r.selectNode($("#mc")); getSelection().removeAllRanges(); getSelection().addRange(r); }
+};
+$("#go").onclick = async () => {
+  const key = $("#key").value.trim();
+  if (!key) return show("Hãy dán key bản quyền.", false);
+  $("#go").disabled = true; $("#go").textContent = "Đang kiểm tra…";
+  try {
+    const r = await fetch("/api/license/activate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ key }) });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.detail || "Kích hoạt thất bại");
+    show(`✔ Kích hoạt thành công cho ${d.name} — còn ${d.days_left} ngày.`, true);
+    setTimeout(() => location.href = "/", 1500);
+  } catch (e) { show(e.message, false); }
+  finally { $("#go").disabled = false; $("#go").textContent = "Kích hoạt"; }
+};
+load();
+</script>
+</body>
+</html>

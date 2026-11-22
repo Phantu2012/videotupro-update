@@ -1,0 +1,348 @@
+{
+ "version": "2026.11.22.1432",
+ "date": "2026-11-22T14:34:26",
+ "notes": "Tu thu lai canh loi, bao loi ro rang tren the canh, khong tu dung API tinh phi",
+ "files": {
+  "1_Bat_Dau_Chay_Videotupro.bat": {
+   "sha256": "a75bcee7b4068515fcbcf785b7a9ad13230566d00089e9101b9b35ab56a2cabe",
+   "size": 793
+  },
+  "2_Dang_Nhap_Muse_Ai.bat": {
+   "sha256": "85358bd6d6ca3bc0c2b53d29622bcd7b1b5ad8df63c0d210f3596395177bd79b",
+   "size": 767
+  },
+  "3_Dang_Nhap_Google_Flow.bat": {
+   "sha256": "6c17535feb01bdbae0e8b1d3868af967e739870a77a9872d8ec61b49e7a0f9b9",
+   "size": 702
+  },
+  "4_Tat_Tool.bat": {
+   "sha256": "483eb797e6804022da887ac1256a9bc9f428f9f5e9fd1e229ce682c3b1cdcb6f",
+   "size": 1145
+  },
+  "app.cp312-win_amd64.pyd": {
+   "sha256": "f8b57860bb2057b3c5370c9711604d61e499f218a55a122b73fd73671eac7cda",
+   "size": 4842496
+  },
+  "assets/logo/01_Logo_VideoStudio_Pro.png": {
+   "sha256": "c495df87aa3e2f15767621a60c8bd171507a4ae7f08ab2928c2fb3ca48d880be",
+   "size": 2983
+  },
+  "assets/logo/02_Logo_Ai_Channel.png": {
+   "sha256": "22c1903f2432052724ca736f872dddb154da36b80b81baba78ca55b474a73431",
+   "size": 2540
+  },
+  "assets/logo/03_Watermark_UltraHD.png": {
+   "sha256": "f5b9240471280e5b0f4aa3c1afbe2a66b254d960ff7b8d4605d6374f154f5045",
+   "size": 2700
+  },
+  "assets/music/01_Uplifting_Inspiring.mp3": {
+   "sha256": "f6a2c7b5be2095bb972d83ac4330908e2d482d572d5c9708ea655cb3fbae5ded",
+   "size": 6567310
+  },
+  "assets/music/02_Lofi_Anime_Chill.mp3": {
+   "sha256": "970ad6e607231cd0b86fc98e534daf3909d45fefca95b143b78e03b8d953013c",
+   "size": 1411447
+  },
+  "assets/music/03_Happy_Upbeat.mp3": {
+   "sha256": "f598c8ee624f1db9a2cd38886524a40baff4ce730dcf999c0763791268fa8265",
+   "size": 3316821
+  },
+  "assets/music/04_Gentle_Acoustic.mp3": {
+   "sha256": "46a97a5861d7603ec7018b98a55d6c1cd3338d8e78449166d19fb2f745a9753a",
+   "size": 4596758
+  },
+  "assets/music/05_Cinematic_Dramatic.mp3": {
+   "sha256": "f8de3bb104a43e77794eda588832709ad4e47549786ed6d0dea8a5574cb382f6",
+   "size": 771177
+  },
+  "assets/music/06_Deep_Ambient.mp3": {
+   "sha256": "29c4ac9eb944a0fbcff2ed53687d1231a893ef5631a75e19c73a7a86f9039f71",
+   "size": 771177
+  },
+  "Cai_Dat_Ban_Do_Dong.bat": {
+   "sha256": "b8d0370927f64322646d2011c6f2d8da8f4dedc2a5e29c12962b3bde855634b5",
+   "size": 1997
+  },
+  "Cai_Dat_Moi_Truong_Lan_Dau.bat": {
+   "sha256": "acd14a70ece2ad5670d78206419a0c85dd9c0d350b6682abd2115bb4b2973620",
+   "size": 1051
+  },
+  "Chay_VideoStudio.bat": {
+   "sha256": "f208124240866cfa11c4cb233c0d39ea2a01a8c6eac3c7ba56e20b3f0cc74640",
+   "size": 49
+  },
+  "config/prompts.enc": {
+   "sha256": "85752e64fffb38c825ffa49a40df7b3e471cc1d7ed36fe2670342458d5397891",
+   "size": 126732
+  },
+  "config/styles.json": {
+   "sha256": "abdd2491d8deb67d010df681a538936cbcb94561f531006e80402a2d0cd5edb9",
+   "size": 6356
+  },
+  "engines/bando/audio/build_audio.py": {
+   "sha256": "2567380e5b851edd0c459c93cba92ddee6d41684ece03951bd31a5b23dcb8287",
+   "size": 678
+  },
+  "engines/bando/audio/music.py": {
+   "sha256": "ebe4a072ef69a64b81350f8aae850e7dd56e376824545918fc8b00d89bdf72cf",
+   "size": 5724
+  },
+  "engines/bando/audio/synth.py": {
+   "sha256": "782d1d31565068b6180b6aacdbf6acdf30c94a39a02bee0e344a0652526f6aaf",
+   "size": 11487
+  },
+  "engines/bando/engine/core.js": {
+   "sha256": "9a0586787a78f56936cd17c2fd5acb4f41955cfe7f6b1208a23ef5d6db8b0e85",
+   "size": 12800
+  },
+  "engines/bando/engine/fx.js": {
+   "sha256": "76175b58eda1442038d2f36ef17554cade82ae2b74b044d111942ded7b15f156",
+   "size": 14662
+  },
+  "engines/bando/engine/player.js": {
+   "sha256": "d45f5def788c5425b57be2dd8e54c8cca4f9fd30379d5f551eab1e3687d10933",
+   "size": 15687
+  },
+  "engines/bando/engine/rig.js": {
+   "sha256": "637d7493cda6e446b181db971a0fc0459fb65b8b89d2f598b5fa377a9bf03883",
+   "size": 24341
+  },
+  "engines/bando/engine/three3d.js": {
+   "sha256": "b0930e177aee917234f5d13f89c16481c0202d5e4bba36834b2bd4831edfebd0",
+   "size": 14745
+  },
+  "engines/bando/engine/ui.js": {
+   "sha256": "899435461bd993a8654aa28d0fab0230782adef692ed7ff497abb30f463ac1b3",
+   "size": 12549
+  },
+  "engines/bando/package-lock.json": {
+   "sha256": "2ad507216a62ed78c0fc84b547863c9dff42d964e68a824052becfa025c69d5e",
+   "size": 5962
+  },
+  "engines/bando/package.json": {
+   "sha256": "b51fcebd7481daa2aa062a495a30498da51d831a557acd55ad162c053f1184d3",
+   "size": 614
+  },
+  "engines/bando/packs/bando/countryball.js": {
+   "sha256": "fee88d49cd9303460c61eaa7cc0666303df99a2c2c3619b31c0b46b88bb29537",
+   "size": 12528
+  },
+  "engines/bando/packs/bando/geo.js": {
+   "sha256": "66ac3d7adc6bb0e0ff018577d4fa15adda6daca21c5627915e3a61186f90d476",
+   "size": 14435
+  },
+  "engines/bando/packs/bando/hud.js": {
+   "sha256": "9fba9ed77bb3e0cba05ddb81ec50f1337c869f20d6d4203528f0674ac00813f4",
+   "size": 2943
+  },
+  "engines/bando/packs/bando/pack.js": {
+   "sha256": "156d22550fdee7838a8de5e22bcdcda3aa0e81fcccd2fa24fb6c6e7fd137d252",
+   "size": 1522
+  },
+  "engines/bando/packs/bando/props.js": {
+   "sha256": "d8fe1a9708b2a79bc9506a1e7a1b330fa1c26ed2cf944b14a0c3a1587b6f8bfd",
+   "size": 18918
+  },
+  "engines/bando/packs/bando/templates.js": {
+   "sha256": "9b9617dfb6bdda06294d9370bb63898e950aef2a12bbfdf379ee44e142844ca8",
+   "size": 50542
+  },
+  "engines/bando/packs/dem/art.js": {
+   "sha256": "2904fd4d21389c0295c235e30c6562c00d9728e510b33ce053a80f99eb486cc3",
+   "size": 14391
+  },
+  "engines/bando/packs/dem/audio.py": {
+   "sha256": "d5a2fd02fc6e25685b850f672bc6e60e0af3cc578b13480acc14188ad367dd16",
+   "size": 8214
+  },
+  "engines/bando/packs/dem/bean.js": {
+   "sha256": "8363b85362526db91420581dd6f7ca7fed8469b952d1fc69d9ae45fcc5bff23f",
+   "size": 25619
+  },
+  "engines/bando/packs/dem/ink.js": {
+   "sha256": "766ee3633bbb9274d1e0b21e7bd4e1208ba9344769c3390affc7141d56d55302",
+   "size": 11466
+  },
+  "engines/bando/packs/dem/pack.js": {
+   "sha256": "7b3ba027d3a29024751a20fcbd2432769ac552deb42369de24356cadfeaabec7",
+   "size": 1675
+  },
+  "engines/bando/packs/dem/phone.js": {
+   "sha256": "87c9c74bab7a28ef88c0a25ba256dfa1d0778d8df7420a50119a0309130c367f",
+   "size": 16337
+  },
+  "engines/bando/packs/dem/sets.js": {
+   "sha256": "a11f4b2b9f3172025feeb359f61101964ecf77278703ad3d119402322b5e8f34",
+   "size": 25107
+  },
+  "engines/bando/packs/dem/templates.js": {
+   "sha256": "81365cefb5790573246f78070e45c91a7cf2602faf0269fbf7aba9dce39cd837",
+   "size": 24827
+  },
+  "engines/bando/packs/dem/thumb.js": {
+   "sha256": "12d78c26dec8aa99e1f8f79f8223144ebf70c256c090583d195589e5f4990a95",
+   "size": 3851
+  },
+  "engines/bando/packs/doodle/host.js": {
+   "sha256": "efb01d5ed4bb38d814ed6bc6dfb119f258e6184be1d5f8e01f71f439ef256484",
+   "size": 19028
+  },
+  "engines/bando/packs/doodle/ink.js": {
+   "sha256": "36b2e72c29481a9204fad36e068b4a021fb64528ffe988c9c2ff7164cfe4b123",
+   "size": 13391
+  },
+  "engines/bando/packs/doodle/map.js": {
+   "sha256": "e7d4ff7a8880e74d081cbc99286fdf35798217162547718b995fb31f7c639a0a",
+   "size": 8254
+  },
+  "engines/bando/packs/doodle/pack.js": {
+   "sha256": "e66e425d39d180c5d4357d45665c384347cc0d8b6df9aecfd8926520c336ac5f",
+   "size": 3898
+  },
+  "engines/bando/packs/doodle/props.js": {
+   "sha256": "719169baab6a92f34eece6be0f9164efb48b3784eb5a17e832b13bc21042548e",
+   "size": 33430
+  },
+  "engines/bando/packs/doodle/sketch.js": {
+   "sha256": "c0b88b85ac4b24a3c0e60148203e3ebc7536d54a78a12541476ac8a6baf0d34a",
+   "size": 12812
+  },
+  "engines/bando/packs/doodle/templates.js": {
+   "sha256": "41a07de3f69b31ffbd0021d85b56d92568f227efeabc5d0b03902f44dfbe50be",
+   "size": 30683
+  },
+  "engines/bando/packs/doodle/world.js": {
+   "sha256": "927195771cc09a5345cbafa7a1a6ad4faebf58db53b68edf3e08204829b13074",
+   "size": 6740
+  },
+  "engines/bando/player.html": {
+   "sha256": "3a73347c2644488aef7c04b74141c48baeb90f7b15e6df43ac5b3671bc8ab7a0",
+   "size": 642
+  },
+  "engines/bando/render.mjs": {
+   "sha256": "4937dc89c82dac6e82e97651ff12aff92dbd4c619f864cf7452546d0a3ca80c0",
+   "size": 18241
+  },
+  "engines/bando/tools/common.py": {
+   "sha256": "4f3f25634b3b8fa725c13f334ec9a20181064e07bd97aa8c11a8d836a5342a20",
+   "size": 3426
+  },
+  "engines/bando/tools/doctor.py": {
+   "sha256": "0ed5dc0dfd6f0858ba2dd66f82300fcc2aa094c0a221784e2e73e3cd398d998a",
+   "size": 3380
+  },
+  "engines/bando/tools/draft_shots.py": {
+   "sha256": "1633b108a6a2c86a42cd91f54894ae777511e97b60da31733c96a4eb7af133e3",
+   "size": 21821
+  },
+  "engines/bando/tools/fast_build.py": {
+   "sha256": "042fcb567f707f5fa2b7c5481777bc9e50cd0050963d43c381ff7f67917a75b8",
+   "size": 10383
+  },
+  "engines/bando/tools/import_anh.py": {
+   "sha256": "1973850a7d91beb874dfd6ea52de87f4778407fd9019201ddd895853c0fbd2d1",
+   "size": 2105
+  },
+  "engines/bando/tools/mix.py": {
+   "sha256": "019fbe2528afedbcc1a809c237a2fa29896d8eae1781200e7135e9cec669b043",
+   "size": 5570
+  },
+  "engines/bando/tools/new_project.py": {
+   "sha256": "8fec8cf84f3310d26b212322dea68dd4f00f6a723611ba899330bc4c4467d8a9",
+   "size": 1968
+  },
+  "engines/bando/tools/phim.py": {
+   "sha256": "b5fdd91b88d29c794dc353fd6e8a415f9abb1d2d9e0ef882d93b7769c8db393d",
+   "size": 17345
+  },
+  "engines/bando/tools/prep_srt.py": {
+   "sha256": "295034be87c34c6f2fa18ab00c28522775a2495e567f804a6379fd7b19b4b0f9",
+   "size": 5800
+  },
+  "engines/bando/tools/prep_voice.py": {
+   "sha256": "2036724818457a38cb2b5bef0cd12019076cd9c765e128aca22dff41fd65c281",
+   "size": 12744
+  },
+  "engines/bando/tools/render_parts.py": {
+   "sha256": "b6e3196c8cf1a7b0b09dcb69a49e20b9d5f0723789f22f780c46eb4a42d62169",
+   "size": 2448
+  },
+  "HUONG_DAN_CAI_DAT.txt": {
+   "sha256": "c97218aa414692cc6e624edc775ac8866c012ffcc12792b820da402654b6ea13",
+   "size": 1182
+  },
+  "HUONG_DAN_SU_DUNG.txt": {
+   "sha256": "b8248608b8c3e755d5d690a6d97f828a45d8660a56724a1b81e73bf972537e7d",
+   "size": 2614
+  },
+  "HUONG_DAN_SU_DUNG_CHO_NHAN_SU.txt": {
+   "sha256": "bb73c54154a68408853ccb7621fedf565b3b5c4e07e0c9f2a726410db407612a",
+   "size": 3187
+  },
+  "Khoi_Dong_An_Console.vbs": {
+   "sha256": "2ac8184c1034e637ab8909142c9200b7aa673879a1705c228eedbc76c1b57597",
+   "size": 350
+  },
+  "launch_all_flow.py": {
+   "sha256": "add18a7f5452ed575ff7531fe45314936108b3500a21c0d46d8c97111a7e4a1b",
+   "size": 1949
+  },
+  "launch_all_muse.py": {
+   "sha256": "f2d15112e0d1ffd598bdf096fac18c0cf21d31c762804a305dcaa5fd5286a05e",
+   "size": 1948
+  },
+  "launch_all_visible.py": {
+   "sha256": "9bb06de1b268adced3f34ce0474b0aefdabf709043f0fa6f568b828e0d4c314d",
+   "size": 1681
+  },
+  "Mo_Quan_Ly_Profile.bat": {
+   "sha256": "406abf2398eec87d7e07a7009182ebf790bb06477f2fd5f099f6474ab3e6f223",
+   "size": 529
+  },
+  "Mo_Tat_Ca_Profile_Dang_Nhap.bat": {
+   "sha256": "d704f3d483b5fd372d9a5719e2421808944c857cde07a30364036d47a0380f9e",
+   "size": 625
+  },
+  "QuanLyProfile.py": {
+   "sha256": "975bad6e46118d2eda8bd4248138ce6d67ec8f33810e9ed0c845d7c84f83bef2",
+   "size": 29594
+  },
+  "requirements.txt": {
+   "sha256": "a2877da5c299739ae02001b62b234e98b40d91018f0012e7831af14c357177a9",
+   "size": 184
+  },
+  "run.bat": {
+   "sha256": "25cf3b812715fb84347dfcf5319ca7ec30c33a909227ad4d84879535ded4bd28",
+   "size": 870
+  },
+  "Tat_Server_VideoStudio.bat": {
+   "sha256": "beda38802a7b6814e948342f1527d9958e50fd3bf6bab50bc73bd06a2948c4ac",
+   "size": 281
+  },
+  "updater.py": {
+   "sha256": "e403ac465bbc205f607e6af39828f7686dd3373c30dd6ac609aab279435bbf64",
+   "size": 11112
+  },
+  "version.json": {
+   "sha256": "996e9ae65bfb77b36c301189c414beb047c8bb163916d5a0e0fddd2cb2f05e9a",
+   "size": 152
+  },
+  "web/css/style.css": {
+   "sha256": "ac9822065cfb9e0296894093b0a6e6088f832f332b8e2404ff6b6fe56dde2a99",
+   "size": 28188
+  },
+  "web/index.html": {
+   "sha256": "66ae0dfe01468febf3759bc997e15e53ed79c49bca5e708542ccb02a0369096c",
+   "size": 72710
+  },
+  "web/js/app.js": {
+   "sha256": "06e24a46e72df5fac65e3f01db53dc6c453178bb7cd1cd1b84c2cfc229f8f540",
+   "size": 137289
+  },
+  "web/kich-hoat.html": {
+   "sha256": "336c6ad82151df48424dc45d6641e6a00683ac88f74536ccce87148319d2eea6",
+   "size": 4551
+  }
+ },
+ "delete": []
+}

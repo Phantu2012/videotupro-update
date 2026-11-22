@@ -1,0 +1,14 @@
+================================================================================
+          HƯỚNG DẪN CÀI ĐẶT VIDEOTUPRO (BẢN CÓ BẢN QUYỀN)
+================================================================================
+1. Cài Python 3.12 (bắt buộc đúng 3.12) — tích chọn "Add Python to PATH" khi cài.
+2. Nhấp đúp  Cai_Dat_Moi_Truong_Lan_Dau.bat   (chờ cài xong).
+3. (Nếu dùng Bản Đồ Động) nhấp đúp  Cai_Dat_Ban_Do_Dong.bat .
+4. Nhấp đúp  1_Bat_Dau_Chay_Videotupro.bat  → trình duyệt mở màn hình KÍCH HOẠT.
+5. Gửi MÃ MÁY trên màn hình cho người cấp bản quyền → nhận KEY → dán vào → Kích hoạt.
+6. Vào Cài đặt nhập Gemini API key của bạn (tool không kèm API key).
+
+Lưu ý: Key chỉ dùng được trên đúng máy đã đăng ký và đến ngày hết hạn ghi trên key.
+       Cài lại Windows / thay ổ cứng có thể đổi Mã máy → liên hệ người cấp để cấp lại.
+       Không chỉnh lùi đồng hồ máy tính (tool sẽ khóa).
+================================================================================

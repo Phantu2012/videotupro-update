@@ -1,0 +1,31 @@
+====================================================================
+      HƯỚNG DẪN SỬ DỤNG VIDEOSTUDIO (BẢN ĐÓNG GÓI ĐỘC LẬP)
+====================================================================
+
+1. CẤU TRÚC THƯ MỤC ĐỘC LẬP
+---------------------------
+Thư mục này đã được đóng gói hoàn chỉnh và độc lập 100%, bao gồm:
+- app/                        : Mã nguồn Backend AI, Pipeline, Kết nối FastST & Google Flow
+- web/                        : Giao diện Studio Web hiện đại
+- data/                       : Kho 18 phong cách video thế giới, cấu hình & mẫu câu lệnh
+- ffmpeg/ffmpeg.exe           : Bộ xử lý âm thanh / ghép video FFmpeg tích hợp sẵn
+- storage/projects/           : Nơi lưu trữ toàn bộ kịch bản, ảnh tham chiếu, audio, video
+- Chay_VideoStudio.bat        : Chạy tool kèm cửa sổ hiển thị log trực tiếp
+- Khoi_Dong_An_Console.vbs    : Chạy ngầm tool (không hiện cửa sổ đen CMD) và mở trình duyệt
+- Tat_Server_VideoStudio.bat  : Tắt nhanh server đang chạy ngầm trên cổng 8765
+
+Bạn có thể sao chép (copy) hoặc di chuyển toàn bộ thư mục này sang bất kỳ vị trí nào trên máy tính để sử dụng độc lập.
+
+2. CÁCH KHỞI ĐỘNG TOOL
+----------------------
+- Cách 1 (Khuyên dùng): Nhấp đúp vào file `Chay_VideoStudio.bat` (hoặc `run.bat`).
+- Cách 2 (Chạy ẩn cửa sổ đen): Nhấp đúp vào file `Khoi_Dong_An_Console.vbs`.
+- Trình duyệt sẽ tự động mở địa chỉ: http://127.0.0.1:8765
+
+3. CÁC TÍNH NĂNG NỔI BẬT ĐÃ TÍCH HỢP
+------------------------------------
+- Đa ngôn ngữ tự động (15 ngôn ngữ): Chọn ngôn ngữ nào (Tiếng Việt, Tiếng Anh US/UK, Nhật, Hàn, Trung, Pháp, Tây Ban Nha, Đức...), AI sẽ tự động dịch/viết kịch bản và chuyển sang giọng đọc bản ngữ tương ứng.
+- 18 Phong cách Video nổi tiếng thế giới: Có nút ✏️ chỉnh sửa trực tiếp mô tả và câu lệnh prompt phong cách.
+- Đồng bộ nhân vật (Master Cast Turnaround Sheet): Tự động đặt tên nhân vật rõ ràng trong cả prompt và ảnh tham chiếu 3 góc nhìn.
+- Chạy song song đa luồng (3 Profile FastST): Tự động mở 3 trình duyệt trên FastST và chia cảnh tạo video đồng thời trên Google Flow.
+- Tự động đồng bộ video từ Google Flow: Tự động tải video 720p về tool, lồng tiếng TTS, tạo ảnh thu nhỏ và phát chuông thông báo khi hoàn thành.

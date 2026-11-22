@@ -1,0 +1,107 @@
+{
+  "anime": {
+    "name": "Anime Style (Nhật Bản)",
+    "description": "Phong cách anime điện ảnh, màu tươi, nhân vật rõ nét",
+    "prompt": "anime style, vibrant colors, clean outlines, soft cel shading, detailed eyes, studio-quality anime frame, high-clarity character design"
+  },
+  "cartoon": {
+    "name": "Cartoon Style (Hoạt hình US)",
+    "description": "Như Disney / Nickelodeon",
+    "prompt": "cartoon style, bold outlines, simplified shapes, expressive features, flat shading, smooth and colorful animation look"
+  },
+  "pixar": {
+    "name": "Pixar / Disney 3D",
+    "description": "Hoạt hình 3D mềm mại, da sáng bóng",
+    "prompt": "Pixar-style 3D character, soft lighting, smooth subsurface scattering, expressive face, highly detailed 3D render, cinematic depth of field"
+  },
+  "3d_realistic": {
+    "name": "3D Realistic (CGI)",
+    "description": "Giống nhân vật game AAA",
+    "prompt": "realistic CGI character, high-detail 3D model, physically based rendering, sharp textures, soft global illumination, cinematic lighting"
+  },
+  "semi_realistic": {
+    "name": "Semi-Realistic (2.5D)",
+    "description": "Nửa hoạt hình nửa thật — rất hợp video kể chuyện",
+    "prompt": "semi-realistic illustration, soft shading, stylized proportions, smooth gradients, high readability, studio concept art look"
+  },
+  "hyper_realistic": {
+    "name": "Hyper Realistic (Chân thực 100%)",
+    "description": "Dùng cho nội dung lịch sử, chân dung",
+    "prompt": "hyper-realistic photography style, detailed skin texture, cinematic lighting, natural colors, ultra-high resolution, depth of field"
+  },
+  "comic": {
+    "name": "Comic / Western Comic",
+    "description": "Giống Marvel / DC",
+    "prompt": "comic book art style, bold ink lines, dynamic shading, halftone texture, dramatic action composition, vibrant colors"
+  },
+  "manga": {
+    "name": "Manga (Đen trắng)",
+    "description": "Dễ ổn định và thích hợp kể truyện",
+    "prompt": "manga style, black and white, fine line art, screentone shading, expressive eyes, high contrast panel-style illustration"
+  },
+  "low_poly": {
+    "name": "Low-Poly 3D",
+    "description": "Phong cách tối giản kiểu game indie",
+    "prompt": "low-poly 3D render, simplified geometric shapes, flat colors, soft lighting, clean polygons, stylized environment"
+  },
+  "flat": {
+    "name": "Flat Illustration 2D",
+    "description": "Rất đẹp cho motion graphic",
+    "prompt": "flat illustration style, bold shapes, minimal details, clean vector look, smooth gradients, modern color palette"
+  },
+  "claymation": {
+    "name": "Claymation / Stop Motion",
+    "description": "Nhìn như mô hình đất sét",
+    "prompt": "claymation style, soft clay textures, handcrafted look, small imperfections, studio lighting, stop-motion aesthetic"
+  },
+  "ghibli": {
+    "name": "Painting-like Animation (Ghibli Style)",
+    "description": "Phong cách anime đẹp – mềm – màu rất xịn",
+    "prompt": "Ghibli-inspired style, soft lighting, painterly textures, warm color palette, expressive characters, cinematic anime background"
+  },
+  "con_ch": {
+    "name": "con chó",
+    "description": "con chó",
+    "prompt": "con chó"
+  },
+  "cinematic_hollywood": {
+    "name": "Cinematic Hollywood (Điện ảnh bom tấn)",
+    "description": "Chân thực chuẩn điện ảnh, ánh sáng Rembrandt, camera anamorphic 8k",
+    "prompt": "cinematic Hollywood movie still, 8k resolution, photorealistic, cinematic lighting, 35mm lens, depth of field, dramatic shadows, blockbuster film atmosphere, ultra high fidelity"
+  },
+  "cyberpunk": {
+    "name": "Cyberpunk / Sci-Fi Neon",
+    "description": "Tương lai viễn tưởng, đèn neon rực rỡ, thành phố mưa đêm, Blade Runner",
+    "prompt": "cyberpunk futuristic sci-fi style, glowing neon lights, rain-slicked reflective surfaces, holographic displays, high-tech dark dystopian city, dramatic atmospheric lighting"
+  },
+  "wes_anderson": {
+    "name": "Wes Anderson Pastel Aesthetic",
+    "description": "Màu pastel độc đáo, bố cục đối xứng hoàn hảo, The Grand Budapest Hotel",
+    "prompt": "Wes Anderson visual aesthetic, pastel color palette, meticulous symmetrical framing, vintage whimsical composition, warm retro color grading, highly stylized storybook cinematic look"
+  },
+  "dark_fantasy": {
+    "name": "Dark Fantasy / Gothic Cinematic",
+    "description": "U tối, huyền bí, phong cách Lord of the Rings / Game of Thrones",
+    "prompt": "dark fantasy epic cinematic style, moody atmospheric fog, muted grim color tones, dramatic chiaroscuro lighting, intricate armor and fabrics, mystical high fantasy realism"
+  },
+  "retro_vhs": {
+    "name": "Retro 80s/90s Vintage Film (VHS)",
+    "description": "Băng từ hoài niệm, màu phim nhựa cổ điển, vệt scanline thập niên 80-90",
+    "prompt": "1980s vintage film aesthetic, retro VHS tape look, soft film grain, authentic analog colors, chromatic aberration, nostalgic warm tones, classic retro cinema"
+  },
+  "watercolor": {
+    "name": "Watercolor Storybook (Tranh truyện cổ tích)",
+    "description": "Tranh vẽ màu nước dịu dàng, nét cọ mềm mại, lý tưởng kể chuyện/bài học",
+    "prompt": "delicate watercolor children's storybook illustration, soft wet-on-wet paint washes, gentle pencil contours, pastel natural tones, whimsical storybook warmth, artistic paper texture"
+  },
+  "documentary": {
+    "name": "Documentary Film (National Geographic)",
+    "description": "Phim tài liệu chân thực tự nhiên, ống kính tele chuyên nghiệp, sắc nét",
+    "prompt": "National Geographic documentary cinematography, authentic natural colors, sharp telephoto lens focus, realistic ambient lighting, breathtaking real-world detail, 4k raw footage look"
+  },
+  "lego": {
+    "name": "Lego Brick Animation",
+    "description": "Mô hình Lego xếp hình chuyển động Stop-motion vui nhộn, sống động",
+    "prompt": "Lego brick animation style, detailed plastic toy bricks, glossy reflective studs, miniature stop-motion tilt-shift effect, charming plastic toy aesthetic"
+  }
+}

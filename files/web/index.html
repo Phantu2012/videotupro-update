@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VideoStudio — Hệ thống làm video tự động bằng AI</title>
+  <meta name="description" content="VideoStudio: biến YouTube, chủ đề, tin tức hoặc truyện thành video hoàn chỉnh với kịch bản Gemini, ảnh/video AI, giọng đọc TTS và dựng FFmpeg tự động." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css?v=2.1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+</head>
+<body>
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">▶</div>
+      <div><strong>VideoStudio</strong><small>AI Auto Video</small></div>
+    </div>
+    <nav>
+      <button class="nav-item active" data-view="create" id="nav-create"><i>✦</i>Tạo video</button>
+      <button class="nav-item" data-view="jobs" id="nav-jobs"><i>⏱</i>Hàng đợi <b class="badge" id="jobs-badge" hidden>0</b></button>
+      <button class="nav-item" data-view="library" id="nav-library"><i>▦</i>Thư viện</button>
+      <button class="nav-item" data-view="social" id="nav-social"><i>🚀</i>Đăng MXH & Lịch <b class="badge" id="social-badge" hidden>0</b></button>
+      <button class="nav-item" data-view="settings" id="nav-settings"><i>⚙</i>Cài đặt</button>
+    </nav>
+    <div class="sidebar-foot" id="sound-toggle-box" style="margin-top:auto;margin-bottom:6px;cursor:pointer;user-select:none" title="Bấm để Bật / Tắt âm thanh thông báo (Chỉ kêu khi xong ảnh tham chiếu hoặc xong toàn bộ các cảnh)">
+      <span id="sound-toggle-icon" style="font-size:14px">🔔</span><span id="sound-toggle-text">Âm báo: Bật</span>
+    </div>
+    <div class="sidebar-foot" id="fastst-box" style="margin-top:0;margin-bottom:6px">
+      <div class="dot" id="fastst-dot"></div><span id="fastst-text">FastST: Đang dò…</span>
+    </div>
+    <div class="sidebar-foot" id="health-box" style="margin-top:0">
+      <div class="dot" id="health-dot"></div><span id="health-text">Đang kiểm tra…</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ============ CREATE ============ -->
+    <section class="view active" id="view-create">
+      <header class="page-head">
+        <div>
+          <h1>Tạo video tự động</h1>
+          <p class="muted">Input → Kịch bản Gemini → Nhân vật → Ảnh/Video AI + Giọng đọc → Video hoàn chỉnh</p>
+        </div>
+      </header>
+
+      <div class="grid-create">
+        <div class="col">
+          <div class="card">
+            <h2><span class="step">1</span>Nguồn nội dung</h2>
+            <div class="source-grid" id="source-grid">
+              <button class="source-card active" data-source="url" id="src-url"><i>▶</i><b>YouTube URL</b><small>Chuyển thể transcript, giữ ≈99% nội dung</small></button>
+              <button class="source-card" data-source="custom" id="src-custom"><i>✎</i><b>Chủ đề</b><small>AI tự sáng tác kịch bản hoàn chỉnh</small></button>
+              <button class="source-card" data-source="news" id="src-news"><i>📰</i><b>Tin tức</b><small>Bài báo / văn bản upload</small></button>
+              <button class="source-card" data-source="story" id="src-story"><i>📖</i><b>Truyện</b><small>Truyện chữ hoặc truyện tranh</small></button>
+            </div>
+
+            <div class="seg" id="render-seg">
+              <button data-render="image" id="render-image">🖼 Ảnh AI + chuyển động<small>Rẻ · ổn định · Ken Burns</small></button>
+              <button class="active" data-render="video" id="render-video">🎬 Video AI (Veo)<small>Clip 8s/scene · đẹp · tốn phí</small></button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><span class="step">2</span>Nội dung</h2>
+            <div class="row2">
+              <label>Dự án (Kênh)
+                <div class="inline" style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap">
+                  <select id="in-project" style="flex:1;min-width:140px"></select>
+                  <button type="button" class="btn ghost sm" id="btn-new-project" title="Tạo dự án / kênh mới" style="flex-shrink:0;padding:6px 10px">＋</button>
+                  <button type="button" class="btn ghost sm" id="btn-channel-rules" style="color:#fbbf24;border-color:rgba(251,191,36,0.4);font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;padding:6px 12px;height:38px;line-height:1" title="Cấu hình Quy tắc Prompt riêng & Nhân vật cố định của Kênh này">
+                    <span>⚙️ Quy tắc Kênh</span>
+                    <span id="badge-channel-rules-status" style="font-size:10px;padding:2px 6px;border-radius:10px;background:rgba(251,191,36,0.15);color:#fbbf24;font-weight:700">Mặc định</span>
+                  </button>
+                </div>
+              </label>
+              <label>Tên video<input id="in-name" placeholder="vd: tap-01" /></label>
+            </div>
+            <div id="project-path-box" style="margin:6px 0 12px;padding:10px 12px;background:rgba(15,23,42,0.65);border:1px solid rgba(56,189,248,0.22);border-radius:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px">
+                <span style="font-size:11.5px;font-weight:700;color:#38bdf8">📁 Nơi lưu trữ của Kênh / Dự án (<b id="lbl-active-project-name">Mặc định</b>)</span>
+                <span id="badge-project-path-mode" class="pill queued" style="font-size:10px;padding:2px 8px">Mặc định</span>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <input id="in-project-path" placeholder="Dán đường dẫn thư mục riêng cho kênh này (VD: D:\Kenh_YouTube_1) hoặc bấm Chọn…" style="flex:1;min-width:200px;padding:7px 10px;font-size:12px;font-family:monospace;background:#0f172a;border:1px solid #334155;border-radius:7px;color:#e2e8f0" />
+                <button type="button" class="btn ghost sm" id="btn-browse-project-path" title="Chọn thư mục trên máy tính">📂 Chọn…</button>
+                <button type="button" class="btn primary sm" id="btn-save-project-path" title="Lưu đường dẫn thư mục cho kênh này">💾 Lưu nơi lưu</button>
+                <button type="button" class="btn ghost sm" id="btn-open-project-path" title="Mở thư mục của kênh này trong Windows Explorer">↗ Mở</button>
+              </div>
+              <small class="muted tiny" id="hint-project-active-path" style="display:block;margin-top:4px">💡 Mỗi Dự án là 1 Kênh: bạn có thể gắn 1 đường dẫn thư mục riêng cho từng kênh.</small>
+            </div>
+            <div id="wrap-url-group">
+              <label id="wrap-url">YouTube URL<input id="in-url" placeholder="https://www.youtube.com/watch?v=..." /></label>
+              <div id="yt-detect-box" hidden class="yt-info-banner">
+                <span class="yt-dot"></span>
+                <div class="yt-info-text">
+                  <b id="yt-info-title">Đang phân tích URL…</b>
+                  <span class="muted tiny" id="yt-info-meta">⏱ Độ dài gốc: --:-- · Dự kiến ~-- cảnh</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tỷ lệ copy từ video gốc (80% / 100% / 50% / 20%) -->
+            <label id="wrap-copy-ratio">Tỷ lệ copy từ video gốc
+              <select id="in-copy-ratio">
+                <option value="80" selected>80% - Copy nhiều (Khuyên dùng)</option>
+                <option value="100">100% - Bảo toàn nguyên bản (Giữ đúng từng câu chữ)</option>
+                <option value="50">50% - Cân bằng (Chắt lọc ý chính, diễn đạt lại ngắn gọn)</option>
+                <option value="20">20% - Sáng tạo cao (Chỉ lấy ý tưởng, AI tự viết lại)</option>
+              </select>
+              <span class="muted tiny" style="margin-top:2px">Mức độ giữ nguyên nội dung gốc: Càng cao thì kịch bản càng bám sát văn bản gốc, hạn chế AI tự sáng tác thêm.</span>
+            </label>
+            <label id="wrap-text" hidden><span id="text-label">Chủ đề</span>
+              <textarea id="in-text" rows="6" placeholder="Nhập chủ đề / dán nội dung…"></textarea>
+            </label>
+            <div class="row2" id="wrap-file" hidden>
+              <label class="file-drop" id="file-drop">
+                <input type="file" id="in-file" accept=".txt,.md,.srt" />
+                <span id="file-name">⬆ Kéo thả hoặc chọn file .txt</span>
+              </label>
+              <label id="wrap-variant" hidden>Kiểu truyện
+                <select id="in-variant"><option value="text">Truyện chữ</option><option value="comic">Truyện tranh</option></select>
+              </label>
+            </div>
+
+            <!-- Điều chỉnh thời lượng: Bật/Tắt giới hạn -->
+            <div class="duration-box" id="wrap-duration-box">
+              <div class="job-top">
+                <label class="switch" style="margin:0">
+                  <input type="checkbox" id="in-enable-duration" />
+                  <span></span>
+                  <b style="color:var(--text);font-size:13px">Bật giới hạn thời lượng video</b>
+                </label>
+                <span class="pill queued" id="duration-status-badge">Mặc định: Bằng video gốc</span>
+              </div>
+              <p class="muted tiny" id="duration-hint" style="margin-top:4px">
+                Mặc định (khi tắt): Giữ nguyên 100% nội dung và làm đúng theo thời lượng của video gốc.
+              </p>
+              <div id="wrap-duration-input" hidden style="margin-top:10px">
+                <div class="row2" style="align-items:flex-end">
+                  <label>Thời lượng mong muốn (giây)
+                    <input type="number" id="in-duration" min="15" step="5" value="60" />
+                  </label>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button type="button" class="btn ghost sm dur-preset" data-sec="30">30s (Shorts)</button>
+                    <button type="button" class="btn ghost sm dur-preset" data-sec="60">60s (1p)</button>
+                    <button type="button" class="btn ghost sm dur-preset" data-sec="180">3 phút</button>
+                    <button type="button" class="btn ghost sm dur-preset" data-sec="300">5 phút</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row2">
+              <label style="grid-column: 1 / -1">Ngôn ngữ nội dung & giọng đọc (Kịch bản + Lời thoại TTS)
+                <select id="in-language" autocomplete="off">
+                  <option value="Tiếng Việt" data-locale="vi" data-default-voice="vi-VN-HoaiMyNeural">🇻🇳 Tiếng Việt (Vietnamese)</option>
+                  <option value="English" data-locale="en-US" data-default-voice="en-US-AndrewMultilingualNeural">🇺🇸 Tiếng Anh - Mỹ (English US)</option>
+                  <option value="British English" data-locale="en-GB" data-default-voice="en-GB-SoniaNeural">🇬🇧 Tiếng Anh - Anh (English UK)</option>
+                  <option value="Japanese (日本語)" data-locale="ja" data-default-voice="ja-JP-NanamiNeural">🇯🇵 Tiếng Nhật (日本語 - Japanese)</option>
+                  <option value="Korean (한국어)" data-locale="ko" data-default-voice="ko-KR-SunHiNeural">🇰🇷 Tiếng Hàn (한국어 - Korean)</option>
+                  <option value="Chinese Simplified (简体中文)" data-locale="zh-CN" data-default-voice="zh-CN-XiaoxiaoNeural">🇨🇳 Tiếng Trung Giản thể (简体中文)</option>
+                  <option value="Chinese Traditional (繁體中文)" data-locale="zh-TW" data-default-voice="zh-TW-HsiaoChenNeural">🇹🇼 Tiếng Trung Phồn thể (繁體中文)</option>
+                  <option value="French (Français)" data-locale="fr" data-default-voice="fr-FR-DeniseNeural">🇫🇷 Tiếng Pháp (Français - French)</option>
+                  <option value="Spanish (Español)" data-locale="es" data-default-voice="es-ES-ElviraNeural">🇪🇸 Tiếng Tây Ban Nha (Español - Spanish)</option>
+                  <option value="German (Deutsch)" data-locale="de" data-default-voice="de-DE-KatjaNeural">🇩🇪 Tiếng Đức (Deutsch - German)</option>
+                  <option value="Thai (ภาษาไทย)" data-locale="th" data-default-voice="th-TH-PremwadeeNeural">🇹🇭 Tiếng Thái (ภาษาไทย - Thai)</option>
+                  <option value="Russian (Русский)" data-locale="ru" data-default-voice="ru-RU-SvetlanaNeural">🇷🇺 Tiếng Nga (Русский - Russian)</option>
+                  <option value="Portuguese (Português)" data-locale="pt" data-default-voice="pt-BR-FranciscaNeural">🇧🇷 Tiếng Bồ Đào Nha (Português)</option>
+                  <option value="Indonesian (Bahasa Indonesia)" data-locale="id" data-default-voice="id-ID-GadisNeural">🇮🇩 Tiếng Indonesia (Bahasa Indonesia)</option>
+                  <option value="Hindi (हिन्दी)" data-locale="hi" data-default-voice="hi-IN-SwaraNeural">🇮🇳 Tiếng Ấn Độ (हिन्दी - Hindi)</option>
+                </select>
+                <small class="muted tiny" id="lang-sync-hint" style="display:block;margin-top:4px;color:#38bdf8">✨ Khi chọn ngôn ngữ nào, AI sẽ tự động chuyển thể kịch bản, lời thoại và đổi danh sách giọng đọc theo đúng ngôn ngữ đó.</small>
+              </label>
+            </div>
+            <label>Ghi chú thêm cho AI (tuỳ chọn)<input id="in-notes" placeholder="vd: giọng kể hài hước, nhắm khán giả trẻ…" /></label>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h2 style="margin:0"><span class="step">3</span>Phong cách hình ảnh</h2>
+              <button type="button" class="btn ghost sm" id="btn-add-style" style="font-size:11px">＋ Thêm phong cách</button>
+            </div>
+            <div class="style-grid" id="style-grid"></div>
+
+            <!-- Panel chỉnh sửa nội dung mô tả phong cách -->
+            <div class="style-editor-box" id="style-editor-box" style="display:none;margin-top:14px;padding:12px 14px;background:#13131f;border:1px solid rgba(139,92,246,0.3);border-radius:10px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                <span style="font-size:12px;font-weight:700;color:#c084fc">✏️ Chỉnh sửa mô tả phong cách: <b id="style-edit-title"></b></span>
+                <div style="display:flex;gap:6px">
+                  <button type="button" class="btn primary sm" id="btn-save-style">💾 Lưu thay đổi</button>
+                  <button type="button" class="btn danger sm" id="btn-del-style" title="Xoá phong cách này">🗑 Xoá</button>
+                  <button type="button" class="btn ghost sm" id="btn-close-style-edit">✕ Đóng</button>
+                </div>
+              </div>
+              <input type="hidden" id="style-edit-key" />
+              <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:10px">
+                <label style="font-size:11px;color:#94a3b8;font-weight:600">Tên phong cách
+                  <input type="text" id="style-edit-name" style="width:100%;padding:6px 10px;background:#1e1e2f;border:1px solid #334155;border-radius:6px;color:#fff;font-size:12px;margin-top:4px" />
+                </label>
+                <label style="font-size:11px;color:#94a3b8;font-weight:600">Mô tả ngắn hiển thị trên thẻ
+                  <input type="text" id="style-edit-desc" style="width:100%;padding:6px 10px;background:#1e1e2f;border:1px solid #334155;border-radius:6px;color:#fff;font-size:12px;margin-top:4px" />
+                </label>
+              </div>
+              <label style="font-size:11px;color:#fbbf24;font-weight:700">Câu lệnh Prompt của phong cách (Sẽ được gắn trực tiếp vào câu lệnh tạo video Veo/ảnh):
+                <textarea id="style-edit-prompt" rows="3" style="width:100%;padding:8px 10px;background:#1e1e2f;border:1px solid #334155;border-radius:6px;color:#f1f5f9;font-size:12px;font-family:monospace;margin-top:4px;resize:vertical"></textarea>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card">
+            <h2><span class="step">4</span>Giọng đọc</h2>
+            <div class="seg small" id="tts-seg">
+              <button class="active" data-engine="edge" id="tts-edge">Edge-TTS · miễn phí</button>
+              <button data-engine="gemini" id="tts-gemini">Gemini TTS</button>
+            </div>
+            <label>Giọng<select id="in-voice"></select></label>
+            <label>Tốc độ đọc <b id="rate-val">+0%</b><input type="range" id="in-rate" min="-30" max="40" value="0" /></label>
+            <button class="btn ghost" id="btn-preview">🔊 Nghe thử</button>
+            <audio id="preview-audio" hidden></audio>
+            <div id="wrap-audio-mode" hidden>
+              <label>Âm thanh clip Veo
+                <select id="in-audio-mode">
+                  <option value="tts">Dùng TTS (thay audio Veo)</option>
+                  <option value="mix">Trộn TTS + âm thanh Veo</option>
+                  <option value="keep">Giữ nguyên Veo (Veo tự nói)</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><span class="step">5</span>Nền tảng tạo Video & Xuất</h2>
+            <label style="color:#fbbf24;font-weight:700">Mô hình / Nền tảng tạo Video
+              <select id="in-video-platform" style="background:#1e1e2f;border:1px solid rgba(251,191,36,0.4);border-radius:8px;padding:8px 10px;font-weight:600;color:#fff;margin-top:4px">
+                <option value="flow">🍌 Google Flow (Veo 3.1 / Nano Banana Pro)</option>
+                <option value="muse">🎬 Muse.ai (Tạo video 10 giây qua Chat)</option>
+              </select>
+            </label>
+            <div class="seg small" id="aspect-seg" style="margin-top:10px">
+              <button class="active" data-aspect="16:9" id="aspect-169">▭ 16:9 YouTube</button>
+              <button data-aspect="9:16" id="aspect-916">▯ 9:16 Shorts/TikTok</button>
+            </div>
+            <div class="toggles">
+              <label class="switch"><input type="checkbox" id="in-subs" checked /><span></span>Phụ đề cứng (burn-in)</label>
+              <label class="switch"><input type="checkbox" id="in-master" checked /><span></span>Ảnh tham chiếu nhân vật (đồng nhất)</label>
+              <label class="switch" id="wrap-keyframe" hidden><input type="checkbox" id="in-keyframe" checked /><span></span>Tạo keyframe ảnh trước khi Veo</label>
+              <label class="switch"><input type="checkbox" id="in-auto-publish" /><span></span>🚀 Tự động đăng MXH (YouTube, TikTok, Facebook) khi xong</label>
+            </div>
+            <div class="row2">
+              <label>🎵 Nhạc nền không bản quyền
+                <div class="inline">
+                  <select id="in-music" style="flex:1"></select>
+                  <button type="button" class="btn ghost sm" id="btn-preview-music" title="Nghe thử nhạc nền" style="padding:6px 10px;min-width:34px">▶</button>
+                  <label class="btn ghost sm upload" title="Tải thêm file nhạc từ máy tính">⬆<input type="file" id="up-music" accept="audio/*" hidden /></label>
+                </div>
+              </label>
+              <label>🏷️ Logo Watermark
+                <div class="inline">
+                  <select id="in-logo" style="flex:1"></select>
+                  <img id="logo-preview-thumb" src="" alt="Logo" style="width:28px;height:28px;object-fit:contain;display:none;border-radius:4px;border:1px solid rgba(255,255,255,0.2)" />
+                  <label class="btn ghost sm upload" title="Tải thêm logo từ máy tính">⬆<input type="file" id="up-logo" accept="image/*" hidden /></label>
+                </div>
+              </label>
+            </div>
+            <label>🔊 Âm lượng nhạc nền <b id="vol-val">28%</b><input type="range" id="in-volume" min="0" max="100" value="28" /></label>
+          </div>
+
+          <div class="card cta">
+            <button class="btn primary big" id="btn-run">✦ Tạo video tự động</button>
+            <button class="btn ghost" id="btn-script-only">Chỉ tạo kịch bản để duyệt trước</button>
+            <p class="muted tiny" id="cost-hint"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ JOBS ============ -->
+    <section class="view" id="view-jobs">
+      <header class="page-head">
+        <div><h1>Hàng đợi xử lý</h1><p class="muted">Theo dõi tiến độ từng video theo thời gian thực</p></div>
+        <div class="inline">
+          <button class="btn ghost sm" id="btn-clear-jobs" title="Xóa các job đã hoàn tất, lỗi hoặc đã huỷ">🗑 Xóa hết đã xong / lỗi</button>
+        </div>
+      </header>
+      <div class="jobs-layout">
+        <div class="job-list" id="job-list"></div>
+        <div class="card job-detail" id="job-detail"><p class="muted center">Chọn một job để xem chi tiết</p></div>
+      </div>
+    </section>
+
+    <!-- ============ LIBRARY ============ -->
+    <section class="view" id="view-library">
+      <header class="page-head">
+        <div><h1>Thư viện</h1><p class="muted">Dự án (Kênh), video đã tạo và chỉnh sửa từng scene</p></div>
+        <div class="inline"><select id="lib-project"></select>
+          <button class="btn ghost sm" id="btn-open-folder">📂 Mở thư mục kênh</button>
+          <button class="btn danger sm" id="btn-del-project">🗑</button></div>
+      </header>
+      <div id="lib-project-path-bar" style="margin-bottom:14px;padding:10px 14px;background:rgba(15,23,42,0.7);border:1px solid rgba(56,189,248,0.22);border-radius:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:12px;font-weight:700;color:#38bdf8;white-space:nowrap">📁 Thư mục lưu kênh:</span>
+        <input id="lib-project-path" placeholder="Đường dẫn thư mục lưu trữ của kênh này…" style="flex:1;min-width:240px;padding:6px 10px;font-size:12px;font-family:monospace;background:#0f172a;border:1px solid #334155;border-radius:7px;color:#e2e8f0" />
+        <button type="button" class="btn ghost sm" id="btn-lib-browse-path">📂 Chọn…</button>
+        <button type="button" class="btn primary sm" id="btn-lib-save-path">💾 Lưu đường dẫn kênh</button>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
+      <div id="video-detail"></div>
+    </section>
+
+    <!-- ============ SOCIAL PUBLISHER & SCHEDULER ============ -->
+    <section class="view" id="view-social">
+      <header class="page-head">
+        <div>
+          <h1>Tự Động Đăng Video & Lên Lịch MXH</h1>
+          <p class="muted">Tự động kết nối YouTube Studio, TikTok Creator và Facebook Reels qua FastST Launcher</p>
+        </div>
+        <div class="inline">
+          <button type="button" class="btn ghost sm" id="btn-check-logins">🔍 Kiểm tra đăng nhập các kênh</button>
+          <button type="button" class="btn ghost sm" id="btn-refresh-social-tasks">🔄 Làm mới danh sách</button>
+        </div>
+      </header>
+
+      <div class="grid-create">
+        <!-- Cột trái: Form tạo lịch đăng / Đăng ngay -->
+        <div class="col">
+          <div class="card">
+            <h2><span class="step">1</span>Chọn Video & Nền tảng</h2>
+            <div class="row2">
+              <label>Kênh / Dự án
+                <select id="soc-project"></select>
+              </label>
+              <label>Video cần đăng
+                <select id="soc-video"></select>
+              </label>
+            </div>
+            
+            <label style="margin-top:10px">Nền tảng đăng tải:
+              <div style="display:flex;gap:12px;margin-top:6px;flex-wrap:wrap">
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(239,68,68,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(239,68,68,0.3)">
+                  <input type="checkbox" id="soc-plat-youtube" checked />
+                  <b style="color:#ef4444">▶ YouTube (Studio/Shorts)</b>
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(236,72,153,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(236,72,153,0.3)">
+                  <input type="checkbox" id="soc-plat-tiktok" checked />
+                  <b style="color:#ec4899">🎵 TikTok Creator</b>
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(59,130,246,0.12);padding:6px 12px;border-radius:8px;border:1px solid rgba(59,130,246,0.3)">
+                  <input type="checkbox" id="soc-plat-facebook" checked />
+                  <b style="color:#3b82f6">📘 Facebook (Reels/Page)</b>
+                </label>
+              </div>
+            </label>
+
+            <label style="margin-top:12px">Trình duyệt FastST thực thi:
+              <select id="soc-profile-port">
+                <option value="">— Tự động chọn Profile FastST đang chạy —</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h2><span class="step">2</span>Tiêu đề & Nội dung chuẩn SEO</h2>
+              <button type="button" class="btn ghost sm" id="btn-soc-ai-seo" style="color:#a855f7;border-color:rgba(168,85,247,0.4)">✨ AI Tối ưu Tiêu đề & Hashtag</button>
+            </div>
+
+            <label>Tiêu đề video (Giật tít, cuốn hút)
+              <input id="soc-title" placeholder="VD: Bí mật chấn động về... #Shorts" maxlength="100" />
+            </label>
+
+            <label>Mô tả video (Description)
+              <textarea id="soc-desc" rows="3" placeholder="Đoạn mô tả ngắn gọn, kích thích người xem tương tác..."></textarea>
+            </label>
+
+            <label>Hashtag xu hướng (Cách nhau bởi dấu phẩy hoặc khoảng trắng)
+              <input id="soc-tags" value="#Shorts, #Viral, #Trending, #AI" />
+            </label>
+          </div>
+
+          <div class="card">
+            <h2><span class="step">3</span>Thời gian & Chế độ xuất bản</h2>
+            <div class="row2">
+              <label>Chế độ hiển thị
+                <select id="soc-visibility">
+                  <option value="public">Công khai (Public) - Khuyên dùng</option>
+                  <option value="unlisted">Không công khai (Unlisted)</option>
+                  <option value="private">Riêng tư (Private)</option>
+                </select>
+              </label>
+              <label>Thời điểm đăng
+                <select id="soc-schedule-type">
+                  <option value="now">⚡ Đăng ngay lập tức</option>
+                  <option value="later">📅 Hẹn giờ xuất bản theo lịch</option>
+                </select>
+              </label>
+            </div>
+
+            <div id="soc-datetime-wrap" style="display:none;margin-top:10px">
+              <label>Ngày & Giờ đăng tự động:
+                <input type="datetime-local" id="soc-datetime" />
+              </label>
+              <small class="muted">Hệ thống daemon chạy ngầm sẽ tự động mở trình duyệt FastST và đăng video đúng thời điểm bạn cài đặt.</small>
+            </div>
+
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button type="button" class="btn primary" id="btn-submit-social-task" style="flex:1;padding:12px">🚀 Tiến hành Đăng / Lên lịch ngay</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột phải: Danh sách Lịch đăng, Tiến độ & Cài đặt Tự động -->
+        <div class="col">
+          <div class="card" style="border-left:4px solid #a855f7">
+            <h2>⚙️ Cài đặt Tự động Đăng khi xong Video</h2>
+            <label style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer">
+              <input type="checkbox" id="soc-set-auto-on-complete" />
+              <b>Tự động đăng ngay lên các nền tảng sau khi render xong video</b>
+            </label>
+            <p class="muted tiny" style="margin-top:4px">Khi tùy chọn này bật, mỗi khi bạn bấm "Ghép Video", hệ thống sẽ tự động tạo lịch và xuất bản video ngay khi FFmpeg ghép xong.</p>
+            
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <button type="button" class="btn ghost sm" id="btn-save-social-settings">💾 Lưu cài đặt tự động</button>
+              <span id="soc-status-badge" class="muted tiny"></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>📅 Danh sách Lịch đăng & Tiến trình</h2>
+            <div id="soc-task-list" style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+              <p class="muted center">Đang tải danh sách lịch đăng…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SETTINGS ============ -->
+    <section class="view" id="view-settings">
+      <header class="page-head"><div><h1>Cài đặt</h1><p class="muted">Khoá API, model và mặc định</p></div></header>
+      <div class="grid-create">
+        <div class="card">
+          <h2>Gemini API</h2>
+          <label>API key <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="link">Lấy key ↗</a>
+            <input id="set-key" type="password" placeholder="AIza…" /></label>
+          <label>Model kịch bản
+            <select id="set-text_model">
+              <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Khuyên dùng - Siêu nhanh & Không lo quá tải)</option>
+              <option value="gemini-3.5-flash">gemini-3.5-flash (Chuẩn Google 2026)</option>
+              <option value="gemini-3.8-flash">gemini-3.8-flash (Flash 3.8 mới nhất)</option>
+              <option value="gemini-flash-latest">gemini-flash-latest (Bản cập nhật Flash)</option>
+              <option value="gemini-3.7-flash">gemini-3.7-flash (Flash 3.7)</option>
+              <option value="gemini-2.5-pro">gemini-2.5-pro (Pro - Kịch bản chuyên sâu)</option>
+              <option value="__custom__">✏️ Nhập model khác (Tùy chỉnh)...</option>
+            </select>
+          </label>
+          <label>Model tạo ảnh
+            <select id="set-image_model">
+              <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Gemini Flash Image - Nhanh)</option>
+              <option value="imagen-4.0-generate-001">imagen-4.0-generate-001 (Imagen 4 Quality - Đẹp nhất)</option>
+              <option value="imagen-4.0-fast-generate-001">imagen-4.0-fast-generate-001 (Imagen 4 Fast - Tốc độ cao)</option>
+              <option value="imagen-3.0-generate-002">imagen-3.0-generate-002 (Imagen 3 Standard)</option>
+              <option value="imagen-3.0-fast-generate-001">imagen-3.0-fast-generate-001 (Imagen 3 Fast)</option>
+              <option value="__custom__">✏️ Nhập model khác (Tùy chỉnh)...</option>
+            </select>
+          </label>
+          <label>Model video (Veo API)
+            <select id="set-video_model">
+              <option value="veo-3.0-fast-generate-001">veo-3.0-fast-generate-001 (Veo 3 Fast - Khuyên dùng)</option>
+              <option value="veo-3.0-generate-001">veo-3.0-generate-001 (Veo 3 Quality - Cao cấp)</option>
+              <option value="veo-2.0-generate-001">veo-2.0-generate-001 (Veo 2.0 Standard)</option>
+              <option value="__custom__">✏️ Nhập model khác (Tùy chỉnh)...</option>
+            </select>
+          </label>
+          <label>Model TTS Gemini
+            <select id="set-tts_model">
+              <option value="gemini-3.8-flash-tts">gemini-3.8-flash-tts (Gemini 3.8 TTS - Chuẩn tiếng Việt)</option>
+              <option value="gemini-2.5-flash-preview-tts">gemini-2.5-flash-preview-tts (Gemini 2.5 TTS)</option>
+              <option value="__custom__">✏️ Nhập model khác (Tùy chỉnh)...</option>
+            </select>
+          </label>
+        </div>
+        <div class="card">
+          <h2>Mặc định</h2>
+          <label>Ngôn ngữ<input id="set-language" /></label>
+          <label>Giọng Edge mặc định<input id="set-edge_voice" /></label>
+          <label>Giọng Gemini mặc định<input id="set-gemini_voice" /></label>
+          <div class="row2">
+            <label>FPS<input id="set-fps" type="number" /></label>
+            <label>Tối thiểu giây/scene<input id="set-min_scene_seconds" type="number" step="0.5" /></label>
+          </div>
+          <div class="row2">
+            <label>Màu chữ phụ đề
+              <select id="set-subtitle_color">
+                <option value="white">Chữ trắng viền đen (Chuẩn)</option>
+                <option value="yellow">Chữ vàng viền đen (Nổi bật Shorts/TikTok)</option>
+              </select>
+            </label>
+            <label>Âm lượng nhạc nền (Audio Ducking)
+              <input id="set-music_volume" type="number" step="0.05" min="0.05" max="1.0" value="0.25" />
+            </label>
+          </div>
+          <div style="margin-top:12px;padding:10px 12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <label class="switch" style="margin:0">
+                <input type="checkbox" id="set-sound_enabled" checked />
+                <span></span>
+                <b style="color:var(--text);font-size:13px">🔔 Cảnh báo âm thanh hoàn tất</b>
+              </label>
+              <button type="button" class="btn ghost sm" id="btn-test-sound" style="padding:3px 8px;font-size:11px">🔊 Nghe thử chuông</button>
+            </div>
+            <p class="muted tiny" style="margin:6px 0 0 0">Chỉ phát âm báo ở 2 thời điểm: khi vẽ xong <b>Ảnh tham chiếu nhân vật</b> hoặc khi đã tạo xong <b>toàn bộ tất cả các cảnh</b> của dự án.</p>
+          </div>
+        </div>
+        <div class="card">
+          <h2>🎬 Hậu Kỳ Điện Ảnh (áp dụng khi Ghép Video)</h2>
+          <div class="row2">
+            <label>Tông màu điện ảnh
+              <select id="set-cinematic_look">
+                <option value="soft">✨ Soft Cinema — tương phản + vignette nhẹ (Khuyên dùng, nhanh)</option>
+                <option value="film">🎞️ Hollywood Teal &amp; Orange + hạt phim (chậm hơn)</option>
+                <option value="film_letterbox">🎥 Hollywood + Dải đen màn ảnh rộng 2.39:1</option>
+                <option value="noir_warm">📜 Hoài cổ ấm — Phim tài liệu lịch sử</option>
+                <option value="off">⛔ Tắt — giữ màu gốc</option>
+              </select>
+            </label>
+            <label>Chuyển cảnh giữa các phân cảnh
+              <select id="set-scene_transition">
+                <option value="fade">Hòa tan mềm (Cross-dissolve) — chuẩn phim tài liệu</option>
+                <option value="mixed">Đa dạng tự động (dissolve / fade đen / lướt)</option>
+                <option value="fadeblack">Mờ qua màn đen</option>
+                <option value="dissolve">Tan hạt (Dissolve)</option>
+                <option value="smoothleft">Lướt mượt sang trái</option>
+                <option value="circleopen">Mở vòng tròn</option>
+                <option value="hblur">Nhòe ngang</option>
+                <option value="none">Cắt thẳng (Hard cut — nhanh nhất)</option>
+              </select>
+            </label>
+          </div>
+          <div class="row2">
+            <label>Thời lượng chuyển cảnh (giây)
+              <input id="set-transition_duration" type="number" step="0.05" min="0.2" max="1.0" value="0.35" />
+            </label>
+            <label>Chuẩn hoá âm thanh −14 LUFS (YouTube)
+              <select id="set-loudness_normalize">
+                <option value="true">Bật — giọng đọc dày, đều, to chuẩn YouTube</option>
+                <option value="false">Tắt</option>
+              </select>
+            </label>
+          </div>
+          <div class="row2">
+            <label>Mở đầu / Kết thúc mờ dần
+              <select id="set-fade_in_out">
+                <option value="true">Bật (Fade in từ màn đen, fade out cuối phim)</option>
+                <option value="false">Tắt</option>
+              </select>
+            </label>
+            <label>Lời đọc dài hơn clip Veo
+              <select id="set-veo_slowmo_stretch">
+                <option value="true">Slow-motion nhẹ (≤1.35x) rồi mới giữ khung</option>
+                <option value="false">Giữ khung hình cuối (đứng hình)</option>
+              </select>
+            </label>
+          </div>
+          <p class="muted tiny" style="margin:6px 0 0 0">Chuyển cảnh &amp; tông màu chỉ áp dụng ở bước <b>Ghép Video</b>, không cần tạo lại cảnh. Đổi xong bấm <b>Lưu cài đặt</b> rồi bấm Ghép lại để xem kết quả.</p>
+        </div>
+        <div class="card" style="grid-column: 1 / -1">
+          <h2>🌐 Quản Lý Profile Trình Duyệt & Proxy (Độc Lập - Thay Thế FastST)</h2>
+          <p class="muted tiny" style="margin-top:-6px;margin-bottom:12px">Hệ thống quản lý Profile tích hợp sẵn: mỗi kênh một profile Chrome riêng + proxy riêng (HTTP/SOCKS5). Tự cấp port CDP để tự động tạo video trên Google Flow & Muse.ai mà không cần FastST.</p>
+
+          <!-- Danh sách Profile -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;margin:10px 0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+              <span style="font-weight:700;font-size:14px;color:#38bdf8">🌐 Danh Sách Profile Trình Duyệt</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button type="button" class="btn primary sm" id="btn-add-profile" style="background:#2563eb;color:#fff;font-weight:600">＋ Thêm Profile Mới</button>
+                <button type="button" class="btn primary sm" id="btn-start-all-fastst" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">▶ Mở TẤT CẢ Profile & Flow</button>
+                <button type="button" class="btn ghost sm" id="btn-open-all-muse" style="border-color:#38bdf8;color:#38bdf8;font-weight:600">🎬 Mở Muse.ai</button>
+                <button type="button" class="btn danger sm" id="btn-stop-all-fastst">⏹ Tắt hết</button>
+                <button type="button" class="btn ghost sm" id="btn-open-profile-gui" title="Mở giao diện phần mềm Quản Lý Profile dạng cửa sổ riêng">🖥 Mở App Desktop</button>
+                <button type="button" class="btn ghost sm" id="btn-refresh-fastst-profs">🔄 Tải lại</button>
+              </div>
+            </div>
+            <div id="fastst-profs-list" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:10px">
+              <span class="muted tiny">Đang tải danh sách profile…</span>
+            </div>
+          </div>
+
+          <!-- Cấu hình Xoay Profile & Chia cảnh -->
+          <div class="row3" style="margin-top:10px">
+            <label>Chế độ xoay profile
+              <select id="set-fastst_rotation_mode">
+                <option value="chunk">Chia theo khối (Ví dụ 10 cảnh/profile)</option>
+                <option value="round_robin">Xoay vòng (Cảnh 1-P1, 2-P2, 3-P3...)</option>
+              </select>
+            </label>
+            <label>Số cảnh / Profile (khi chia khối)
+              <input id="set-fastst_scenes_per_profile" type="number" min="1" max="100" value="10" />
+            </label>
+            <label>Ảnh tham chiếu (Reference Image)
+              <select id="set-fastst_ref_mode">
+                <option value="master">Dùng chung 1 ảnh Master Cast cho mọi cảnh</option>
+                <option value="chain">🔗 Nối mạch cảnh liên tục (Video Chaining - Khung hình cuối cảnh trước)</option>
+                <option value="scene">Ưu tiên ảnh riêng từng cảnh (Fallback Master)</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- Cấu hình Model Google Flow -->
+          <div class="row3" style="margin-top:6px">
+            <label>Model trên Google Flow
+              <select id="set-fastst_flow_model">
+                <option value="default">Mặc định đang hiện (Veo 3 Ultra)</option>
+                <option value="veo-3.1-fast">Veo 3.1 Fast</option>
+                <option value="veo-3.1-quality">Veo 3.1 Quality</option>
+              </select>
+            </label>
+            <label>Độ phân giải Flow
+              <select id="set-fastst_resolution">
+                <option value="720p">720p (Nhanh & Ổn định)</option>
+                <option value="1080p">1080p (Sắc nét)</option>
+              </select>
+            </label>
+            <label>Tỷ lệ khung hình Flow
+              <select id="set-fastst_aspect_ratio">
+                <option value="16:9">16:9 (Video Ngang)</option>
+                <option value="9:16">9:16 (Video Dọc Shorts)</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- Cấu hình Nhập Prompt: Gõ như người thật vs Copy Paste -->
+          <div class="row2" style="margin-top:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px;">
+            <label>Phương thức nhập prompt vào Google Flow
+              <select id="set-fastst_input_mode">
+                <option value="human">⌨ Đánh text như người thật (Chống quét bot / Spam)</option>
+                <option value="paste">📋 Dán nhanh (Copy - Paste tức thì)</option>
+              </select>
+            </label>
+            <label>Tốc độ gõ phím giả lập
+              <select id="set-fastst_typing_speed">
+                <option value="medium">Bình thường (Khoảng 35 - 65ms/ký tự)</option>
+                <option value="human_natural">Người thật tự nhiên (Độ trễ ngẫu nhiên 45 - 120ms)</option>
+                <option value="fast">Nhanh (15 - 35ms/ký tự)</option>
+              </select>
+            </label>
+          </div>
+
+          <div style="margin-top:14px;display:flex;gap:10px">
+            <button class="btn primary" id="btn-save-settings">💾 Lưu tất cả cài đặt</button>
+          </div>
+        </div>
+
+        <!-- QUẢN LÝ CÂU LỆNH HỆ THỐNG (BẢO VỆ MẬT KHẨU) -->
+        <div class="card" style="grid-column: 1 / -1;border: 1px solid rgba(168, 85, 247, 0.3);background: linear-gradient(180deg, rgba(24, 21, 40, 0.95), rgba(15, 12, 28, 0.98))">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+            <div>
+              <h2 style="display:flex;align-items:center;gap:8px;margin-bottom:4px;color:#c084fc">
+                <span>🔐 Quản Lý & Chỉnh Sửa Câu Lệnh Hệ Thống (Prompt Templates)</span>
+              </h2>
+              <p class="muted tiny" style="margin:0">Toàn bộ câu lệnh AI (Viết kịch bản, Tạo video Veo 3 / Muse.ai, Nhân vật Master Cast, Turnaround Sheet 3 góc). Chỉ quản trị viên mới có quyền truy cập & chỉnh sửa.</p>
+            </div>
+            <div id="prompts-lock-status">
+              <span class="pill queued" id="pill-prompt-lock" style="padding:4px 10px;font-weight:600">🔒 Đang Khóa</span>
+            </div>
+          </div>
+
+          <!-- Khối Đăng Nhập Mật Khẩu (khi chưa mở khóa) -->
+          <div id="prompts-auth-box" style="margin-top:16px;padding:20px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px">
+            <div style="font-size:36px">🛡️</div>
+            <div style="font-weight:700;font-size:15px;color:#e2e8f0">Khu vực cấu hình câu lệnh lõi bảo mật</div>
+            <div class="muted tiny" style="max-width:500px">Vui lòng nhập mật khẩu quản trị viên để mở khóa xem và chỉnh sửa toàn bộ các câu lệnh Prompt của hệ thống.</div>
+            <div style="display:flex;gap:8px;max-width:360px;width:100%;margin-top:6px">
+              <input type="password" id="prompts-pass-input" placeholder="Nhập mật khẩu..." style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid rgba(168,85,247,0.5);background:#0f0c1c;color:#fff;font-size:14px" />
+              <button type="button" class="btn primary sm" id="btn-unlock-prompts" style="background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;font-weight:600;white-space:nowrap">🔓 Mở Khóa</button>
+            </div>
+            <div id="prompts-auth-msg" class="tiny" style="color:#f87171;min-height:18px"></div>
+          </div>
+
+          <!-- Khối Trình Biên Tập Câu Lệnh (sau khi mở khóa thành công) -->
+          <div id="prompts-editor-box" style="display:none;margin-top:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span class="pill done" style="font-weight:600;padding:4px 10px">🟢 Đã Mở Khóa Quyền Quản Trị</span>
+                <span class="muted tiny">Bạn có thể tự do điều chỉnh bất kỳ câu lệnh nào bên dưới. Mọi thay đổi sẽ có hiệu lực ngay lập tức.</span>
+              </div>
+              <button type="button" class="btn ghost sm" id="btn-lock-prompts" style="border-color:rgba(255,255,255,0.2)">🔒 Khóa lại</button>
+            </div>
+
+            <!-- Bộ Chọn Câu Lệnh -->
+            <div style="display:grid;grid-template-columns:300px 1fr;gap:16px" class="prompts-layout">
+              <!-- Cột Danh Sách Câu Lệnh Bên Trái -->
+              <div style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px;max-height:640px;overflow-y:auto">
+                <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-left:4px">Danh sách 13 Câu Lệnh Hệ Thống</div>
+                <div id="prompts-list-container" style="display:flex;flex-direction:column;gap:4px">
+                  <!-- JS sẽ render các item tại đây -->
+                </div>
+              </div>
+
+              <!-- Cột Soạn Thảo Bên Phải -->
+              <div id="prompt-detail-panel" style="background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+                  <div>
+                    <span id="pedit-category" class="badge-char purple" style="margin-bottom:4px;display:inline-block">Video AI</span>
+                    <h3 id="pedit-title" style="margin:4px 0 2px 0;font-size:16px;color:#f8fafc">Chọn một câu lệnh bên trái để xem & sửa</h3>
+                    <div id="pedit-id" class="muted tiny" style="font-family:monospace;color:#a855f7">ID: ...</div>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center">
+                    <label style="font-size:11px;display:flex;align-items:center;gap:6px;margin:0" title="Độ sáng tạo của AI (0.0 - 1.0)">
+                      <span class="muted">Temperature:</span>
+                      <input type="number" id="pedit-temp" min="0" max="1" step="0.05" value="0.7" style="width:65px;padding:4px 6px;font-size:12px" />
+                    </label>
+                    <button type="button" class="btn primary sm" id="btn-save-current-prompt" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700">💾 Lưu Câu Lệnh Này</button>
+                  </div>
+                </div>
+
+                <div id="pedit-desc" class="muted tiny" style="background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:6px;border-left:3px solid #38bdf8"></div>
+
+                <!-- Các biến hỗ trợ -->
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                  <span class="muted tiny" style="font-weight:600">Các biến thay thế có sẵn:</span>
+                  <div id="pedit-vars" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+                </div>
+
+                <!-- Textarea Câu lệnh chính -->
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#e2e8f0">
+                  <span>Câu Lệnh Chính (System Instruction Text) - Toàn bộ cấu trúc, logic, quy tắc sinh video / kịch bản:</span>
+                  <textarea id="pedit-sys-text" rows="18" style="width:100%;font-family:Consolas, 'Courier New', monospace;font-size:12px;line-height:1.55;background:#0b0816;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:12px;color:#f1f5f9;resize:vertical"></textarea>
+                </label>
+
+                <!-- Textarea Quy tắc bổ sung -->
+                <label style="display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#e2e8f0">
+                  <span>Quy Tắc Bổ Sung (Addendum Text) - Ghi đè, quy định định dạng hoặc ràng buộc thêm:</span>
+                  <textarea id="pedit-add-text" rows="5" style="width:100%;font-family:Consolas, 'Courier New', monospace;font-size:12px;line-height:1.5;background:#0b0816;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px;color:#f1f5f9;resize:vertical"></textarea>
+                </label>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                  <span class="muted tiny" id="pedit-status-msg"></span>
+                  <button type="button" class="btn primary" id="btn-save-current-prompt-2" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;padding:8px 24px">💾 Lưu Câu Lệnh</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Xem Phóng To Toàn Màn Hình (Lightbox / Fullscreen Zoom) -->
+  <div id="img-lightbox-modal" class="lightbox-modal" hidden>
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-content">
+      <button type="button" class="lightbox-close" id="lightbox-close" title="Đóng (Esc)">✕</button>
+      <img id="lightbox-img" src="" alt="Fullscreen Preview" />
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm / Sửa Profile -->
+  <div id="modal-profile" class="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(3px)">
+    <div style="background:#181528;border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:22px;width:500px;max-width:92vw;box-shadow:0 24px 48px rgba(0,0,0,0.7)">
+      <h3 id="modal-prof-title" style="margin-top:0;font-size:16px;color:#38bdf8;font-weight:700">＋ Thêm Profile Mới</h3>
+      <input type="hidden" id="prof-modal-id" value="" />
+      <div style="display:flex;flex-direction:column;gap:12px;margin:14px 0">
+        <label style="font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:4px">Tên Profile / Tên Kênh:
+          <input id="prof-modal-name" placeholder="Ví dụ: Kênh Phật Pháp 1" style="width:100%" />
+        </label>
+        <label style="font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:4px">Proxy (ip:port hoặc ip:port:user:pass hoặc socks5://...):
+          <input id="prof-modal-proxy" placeholder="Để trống nếu dùng IP mạng nhà" style="width:100%" />
+        </label>
+        <div style="display:flex;gap:10px">
+          <label style="flex:1;font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:4px">Nhóm:
+            <input id="prof-modal-group" placeholder="Mặc định" value="Mặc định" style="width:100%" />
+          </label>
+          <label style="flex:1;font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:4px">Ghi chú:
+            <input id="prof-modal-note" placeholder="Tùy chọn" style="width:100%" />
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+          <button type="button" class="btn ghost sm" id="btn-test-modal-proxy">🔎 Kiểm tra Proxy này</button>
+          <span id="prof-proxy-check-res" class="tiny" style="color:#9ca3af"></span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px">
+        <button type="button" class="btn ghost sm" id="btn-cancel-modal-prof">Hủy</button>
+        <button type="button" class="btn primary sm" id="btn-save-modal-prof" style="background:#2563eb;color:#fff">💾 Lưu Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Duyệt & Chọn Thư Mục Máy Tính Trực Quan -->
+  <div id="modal-folder-browser" class="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+    <div style="background:#131124;border:1px solid rgba(168,85,247,0.35);border-radius:14px;padding:22px;width:680px;max-width:94vw;box-shadow:0 24px 60px rgba(0,0,0,0.85);display:flex;flex-direction:column;max-height:88vh">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h3 style="margin:0;font-size:16px;color:#c084fc;display:flex;align-items:center;gap:8px">
+          <span>📁 Chọn Nơi Lưu Trữ Cho Kênh / Dự Án</span>
+        </h3>
+        <button type="button" class="btn ghost sm" id="btn-close-fb-modal" style="padding:2px 8px;font-size:14px">✕</button>
+      </div>
+
+      <!-- Lối tắt nhanh: Ổ đĩa & Thư mục phổ biến -->
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Lối tắt nhanh:</div>
+        <div id="fb-quick-list" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+
+      <!-- Đường dẫn hiện tại & Nút Lên Thư Mục Cha -->
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <button type="button" class="btn ghost sm" id="btn-fb-up" title="Lên thư mục cha">⬆ Lên</button>
+        <input type="text" id="fb-current-path" placeholder="Đường dẫn thư mục..." style="flex:1;font-family:monospace;font-size:12px;padding:8px 10px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#f8fafc" />
+        <button type="button" class="btn ghost sm" id="btn-fb-go">Đi tới</button>
+      </div>
+
+      <!-- Danh sách thư mục con -->
+      <div id="fb-folder-list" style="flex:1;overflow-y:auto;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px;min-height:240px;max-height:360px;display:flex;flex-direction:column;gap:3px">
+        <span class="muted tiny">Đang tải danh sách thư mục...</span>
+      </div>
+
+      <!-- Tạo thư mục mới trong thư mục này -->
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px">
+        <span class="muted tiny" style="white-space:nowrap">＋ Thư mục mới:</span>
+        <input type="text" id="fb-new-folder-name" placeholder="Tên thư mục mới..." style="flex:1;font-size:12px;padding:5px 8px;background:#090715;border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#fff" />
+        <button type="button" class="btn ghost sm" id="btn-fb-create-folder">Tạo</button>
+      </div>
+
+      <!-- Footer chọn -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px">
+        <span class="muted tiny" id="fb-status-msg"></span>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn ghost sm" id="btn-cancel-fb">Hủy</button>
+          <button type="button" class="btn primary sm" id="btn-select-fb" style="background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;font-weight:700;padding:8px 18px">✔ Chọn Thư Mục Này</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Cấu hình Quy tắc Prompt & Nhân vật cố định cho Kênh -->
+  <div id="modal-channel-rules" class="modal-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(5px)">
+    <div style="background:#131124;border:1px solid rgba(251,191,36,0.35);border-radius:14px;padding:24px;width:760px;max-width:95vw;box-shadow:0 24px 60px rgba(0,0,0,0.85);display:flex;flex-direction:column;max-height:90vh">
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:10px">
+        <div>
+          <h2 style="display:flex;align-items:center;gap:8px;margin:0;font-size:17px;color:#fbbf24">
+            <span>👑 Quy Tắc Prompt & Nhân Vật Cố Định: <b id="cr-title-channel-name" style="color:#c084fc">Kênh</b></span>
+          </h2>
+          <p class="muted tiny" style="margin:4px 0 0">Mỗi video mới của kênh này sẽ tự động chạy theo kịch bản triệu view & nhân vật cố định mà không cần thiết lập lại.</p>
+        </div>
+        <button type="button" class="btn ghost sm" id="btn-close-cr" style="font-size:16px;line-height:1;padding:4px 10px">✕</button>
+      </div>
+
+      <!-- Body scrollable -->
+      <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-right:4px">
+        <!-- 1. Bật / Tắt quy tắc riêng -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-weight:700;font-size:13px;color:#fbbf24">⚡ Kích hoạt Quy tắc Kịch bản & Nhân vật riêng cho Kênh này</div>
+            <div class="muted tiny">Khi bật, AI sẽ bắt buộc tuân theo Prompt triệu view và dùng nhân vật tham chiếu cố định của kênh.</div>
+          </div>
+          <label class="switch" style="margin:0"><input type="checkbox" id="cr-enabled" checked /><span></span></label>
+        </div>
+
+        <!-- 2. Nhân vật & Ảnh tham chiếu cố định của Kênh -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-weight:700;font-size:13px;color:#c084fc;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <span>👤 Nhân vật & Ảnh tham chiếu cố định (3-View Master Reference)</span>
+            <span class="muted tiny">Kế thừa tự động cho mọi video</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:220px 1fr;gap:14px;align-items:start">
+            <!-- Cột trái: Khung ảnh -->
+            <div>
+              <div id="cr-img-box" style="width:100%;aspect-ratio:16/9;background:rgba(0,0,0,0.5);border:1px dashed rgba(168,85,247,0.4);border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative">
+                <img id="cr-img-preview" src="" alt="Reference Image" style="width:100%;height:100%;object-fit:cover;display:none;cursor:zoom-in" title="Bấm để xem phóng to" />
+                <div id="cr-img-placeholder" style="text-align:center;padding:10px">
+                  <div style="font-size:24px">👤</div>
+                  <div class="muted tiny" style="margin-top:4px">Chưa có ảnh cố định</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:4px;margin-top:8px">
+                <label class="btn ghost sm" style="flex:1;cursor:pointer;padding:4px 6px;font-size:11px;text-align:center" title="Tải ảnh tham chiếu từ máy tính lên">＋ Tải ảnh<input type="file" id="cr-file-input" accept="image/*" hidden /></label>
+                <button type="button" class="btn ghost sm" id="btn-cr-gen-ai" style="flex:1;padding:4px 6px;font-size:11px;color:#fbbf24;border-color:rgba(251,191,36,0.3)" title="Tự động vẽ bảng 3 góc 16:9 bằng AI">🎨 Vẽ bằng AI</button>
+                <button type="button" class="btn danger sm" id="btn-cr-del-img" style="padding:4px 8px;font-size:11px;display:none" title="Xoá ảnh này">🗑</button>
+              </div>
+            </div>
+
+            <!-- Cột phải: Thông tin nhân vật -->
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px">
+                <label style="flex:2;margin:0;font-size:11px;font-weight:600">Tên nhân vật chính:
+                  <input type="text" id="cr-char-name" placeholder="VD: CHÚA GIÊSU (JESUS CHRIST)" style="font-size:12px;padding:6px 8px;font-weight:700;color:#c084fc;background:#090715;border:1px solid rgba(192,132,252,0.35);border-radius:6px;width:100%" />
+                </label>
+                <label style="flex:1;margin:0;font-size:11px;font-weight:600">Giới tính:
+                  <select id="cr-char-gender" style="font-size:12px;padding:6px 8px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:6px;width:100%">
+                    <option value="male">Nam (Male)</option>
+                    <option value="female">Nữ (Female)</option>
+                  </select>
+                </label>
+              </div>
+              <label style="margin:0;font-size:11px;font-weight:600">Mô tả ngoại hình chuẩn (từ đầu đến chân, trang phục, diện mạo):
+                <textarea id="cr-char-vis" rows="3" placeholder="VD: Adult male in his 30s, compassionate face, gentle warm brown eyes, wavy brown hair, neat beard, traditional woven linen tunic robe, crimson mantle, leather sandals..." style="font-size:12px;padding:6px 8px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:6px;width:100%;resize:vertical"></textarea>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Prompt Kịch Bản Triệu View Của Kênh -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-weight:700;font-size:13px;color:#38bdf8">📝 Prompt Kịch Bản Triệu View Của Kênh (System Prompt / Hook & Rules)</span>
+            <div style="display:flex;gap:4px">
+              <span class="muted tiny" style="align-self:center">Mẫu chuẩn:</span>
+              <button type="button" class="btn ghost sm cr-tpl-btn" data-tpl="spiritual" style="padding:2px 7px;font-size:11px" title="Kênh Đạo / Tâm Linh / Chữa Lành">✨ Tâm Linh</button>
+              <button type="button" class="btn ghost sm cr-tpl-btn" data-tpl="business" style="padding:2px 7px;font-size:11px" title="Kênh Kinh Doanh / Tài Chính / Tri Thức">💼 Kinh Doanh</button>
+              <button type="button" class="btn ghost sm cr-tpl-btn" data-tpl="wisdom" style="padding:2px 7px;font-size:11px" title="Kênh Bài Học Cuộc Sống / Đạo Lý">📖 Đạo Lý</button>
+              <button type="button" class="btn ghost sm cr-tpl-btn" data-tpl="history" style="padding:2px 7px;font-size:11px" title="Kênh Lịch Sử Hào Hùng">⚔️ Lịch Sử</button>
+            </div>
+          </div>
+          <textarea id="cr-system-prompt" rows="8" placeholder="Nhập câu lệnh định dạng kịch bản triệu view riêng cho kênh này..." style="width:100%;font-size:12px;font-family:monospace;padding:8px 10px;background:#090715;border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:#f8fafc;resize:vertical"></textarea>
+        </div>
+
+        <!-- 4. Cài đặt Mặc Định Của Kênh -->
+        <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-weight:700;font-size:13px;color:#fbbf24;margin-bottom:10px">⚙️ Cài đặt Mặc Định Khi Tạo Video Cho Kênh Này</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <label style="margin:0;font-size:11.5px;font-weight:600">Tỷ lệ khung hình mặc định:
+              <select id="cr-aspect" style="width:100%;padding:6px 8px;font-size:12px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff">
+                <option value="16:9">16:9 YouTube Widescreen</option>
+                <option value="9:16">9:16 Shorts / TikTok</option>
+              </select>
+            </label>
+            <label style="margin:0;font-size:11.5px;font-weight:600">Phong cách hình ảnh mặc định:
+              <select id="cr-style" style="width:100%;padding:6px 8px;font-size:12px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff"></select>
+            </label>
+            <label style="margin:0;font-size:11.5px;font-weight:600">Giọng đọc TTS mặc định:
+              <select id="cr-voice" style="width:100%;padding:6px 8px;font-size:12px;background:#090715;border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:#fff"></select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px">
+        <span id="cr-save-msg" class="tiny" style="color:#10b981"></span>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn ghost sm" id="btn-cancel-cr">Đóng</button>
+          <button type="button" class="btn primary sm" id="btn-save-cr" style="background:linear-gradient(135deg,#9333ea,#7c3aed);color:#fff;font-weight:700;padding:8px 20px">💾 Lưu Quy Tắc Kênh</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toasts"></div>
+  <script src="/js/app.js?v=2.6"></script>
+<script>
+/* Cảnh báo sắp hết hạn bản quyền */
+fetch("/api/license/status").then(r => r.json()).then(st => {
+  if (!st || !st.ok || st.days_left > 7) return;
+  const b = document.createElement("div");
+  b.style.cssText = "position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:99999;background:#3b2a05;color:#f5c443;border:1px solid #f5c443;border-radius:10px;padding:8px 16px;font:600 13px Segoe UI,sans-serif";
+  b.textContent = `⏳ Bản quyền còn ${st.days_left} ngày (hết hạn ${st.expires.split("-").reverse().join("/")}). Liên hệ người cấp để gia hạn.`;
+  document.body.appendChild(b);
+}).catch(() => {});
+</script>
+<script>
+/* Thông báo có bản cập nhật mới */
+(function checkUpdate() {
+  fetch("/api/update/status").then(r => r.json()).then(st => {
+    if (!st || !st.available || document.getElementById("vtp-upd")) return;
+    const b = document.createElement("div");
+    b.id = "vtp-upd";
+    b.style.cssText = "position:fixed;right:14px;bottom:14px;z-index:99999;background:#0f2a1d;color:#d1fae5;border:1px solid #34d399;border-radius:12px;padding:12px 14px;font:13px Segoe UI,sans-serif;max-width:360px;box-shadow:0 10px 30px rgba(0,0,0,.4)";
+    b.innerHTML = `<b style="color:#34d399">🚀 Có bản mới ${st.latest}</b><div style="margin:4px 0 8px;opacity:.85">${(st.notes || "").replace(/</g, "&lt;")}</div>`;
+    const btn = document.createElement("button");
+    btn.textContent = "Cập nhật ngay";
+    btn.style.cssText = "background:#34d399;color:#062;border:0;border-radius:8px;padding:6px 12px;font-weight:700;cursor:pointer";
+    btn.onclick = async () => {
+      btn.disabled = true; btn.textContent = "Đang cập nhật…";
+      const r = await fetch("/api/update/apply", { method: "POST" });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { btn.disabled = false; btn.textContent = "Cập nhật ngay"; alert(d.detail || "Chưa cập nhật được"); return; }
+      b.innerHTML = "⏳ Đang cập nhật — tool sẽ tự mở lại sau khoảng 1 phút. Có thể đóng tab này.";
+    };
+    b.appendChild(btn);
+    document.body.appendChild(b);
+  }).catch(() => {});
+  setTimeout(checkUpdate, 30 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
